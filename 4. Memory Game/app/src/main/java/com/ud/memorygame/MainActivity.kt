@@ -1,5 +1,6 @@
 package com.ud.memorygame
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
@@ -22,16 +23,25 @@ class MainActivity : ComponentActivity() {
         btnMedium = findViewById(R.id.btnMedium)
         btnHard = findViewById(R.id.btnHard)
 
-        btnLow.setOnClickListener({
+        btnLow.setOnClickListener {
             Toast.makeText(this, "Clic in btn Low", Toast.LENGTH_LONG).show()
-        })
+            goToGame("L")
+        }
 
-        btnMedium.setOnClickListener({
+        btnMedium.setOnClickListener{
             Toast.makeText(this, "Clic in btn Medium", Toast.LENGTH_LONG).show()
-        })
+            goToGame("M")
+        }
 
-        btnHard.setOnClickListener({
+        btnHard.setOnClickListener{
             Toast.makeText(this, "Clic in btn Hard", Toast.LENGTH_LONG).show()
-        })
+            goToGame("H")
+        }
+    }
+
+    fun goToGame(level: String){
+        var intent = Intent(this, GameActivity::class.java)
+        intent.putExtra("level", level)
+        startActivity(intent)
     }
 }
