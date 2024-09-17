@@ -23,21 +23,21 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/btnLow"
             android:layout_weight="0.3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/activity_main_btn_level1" />
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/btnMedium"
             android:layout_weight="0.3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/activity_main_btn_level2" />
 
         <Button
-            android:id="@+id/button3"
+            android:id="@+id/btnHard"
             android:layout_weight="0.3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
