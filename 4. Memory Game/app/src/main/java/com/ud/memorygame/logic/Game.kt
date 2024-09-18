@@ -2,34 +2,40 @@ package com.ud.memorygame.logic
 
 import com.ud.memorygame.model.enums.TypeMovement
 
-class Game (var level: String){
+class Game(var level: String) {
     var rows: Int = 0
     var cols: Int = 0
     var board: MutableList<TypeMovement> = mutableListOf()
 
     init {
         calculateShape()
-        generateMovement()
+        generateBoard()
     }
 
-    fun calculateShape(){
-        rows = when(this.level){
-            "L" -> 2
-            "M" -> 3
-            "H" -> 4
+    private fun calculateShape() {
+        rows = when (this.level) {
+            "L" -> 1
+            "M" -> 2
+            "H" -> 2
             else -> 0
         }
 
-        cols = when(this.level){
-            "L" -> 2
-            "M" -> 3
-            "H" -> 4
+        cols = when (this.level) {
+            "L", "M", "H" -> 2
             else -> 0
         }
     }
 
-    fun generateMovement(){
-        var movement = TypeMovement.values().get((0..TypeMovement.values().size).random())
-        board.add(movement)
+    private fun generateBoard() {
+        val totalCells = rows * cols
+        val availableMovements = TypeMovement.values().toList().shuffled()
+
+        for (i in 0 until totalCells / 2) {
+            val movement = availableMovements[i % availableMovements.size]
+            board.add(movement)
+            board.add(movement)
+        }
+
+        board.shuffle()
     }
 }
