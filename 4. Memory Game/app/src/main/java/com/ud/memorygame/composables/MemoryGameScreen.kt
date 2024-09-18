@@ -30,20 +30,20 @@ import kotlinx.coroutines.delay
 @Composable
 fun MemoryGameScreen(level: String) {
     val game = remember { Game(level) }
-    var isPlayerTurn by remember { mutableStateOf(false) }
+    var isPlayerTurn = remember { mutableStateOf(false) }
     var movements = game.movementSecuence
 
-    var currentMovementIndex by remember { mutableStateOf(-1) }
+    var currentMovementIndex = remember { mutableStateOf(-1) }
 
     LaunchedEffect(movements) {
-        isPlayerTurn = false
+        isPlayerTurn.value = false
         movements.forEachIndexed { index, movement ->
-            currentMovementIndex = movement
+            currentMovementIndex = mutableStateOf(movement)
             delay(1000L)
-            currentMovementIndex = -1
+            currentMovementIndex = mutableStateOf(-1)
             delay(500L)
         }
-        isPlayerTurn = true
+        isPlayerTurn.value = true
     }
 
     Column(
@@ -62,12 +62,12 @@ fun MemoryGameScreen(level: String) {
                     val indexBoard = rowIndex * game.cols + colIndex
                     val movement = game.board[indexBoard]
 
-                    val isHighlighted = currentMovementIndex == indexBoard
+                    val isHighlighted = currentMovementIndex.value == indexBoard
                     MovementCard(
                         movement = movement,
                         game = game,
                         indexBoard = indexBoard,
-                        isClickable = isPlayerTurn,
+                        isClickable = isPlayerTurn.value,
                         isHighlighted = isHighlighted
                     )
                 }
@@ -103,7 +103,7 @@ fun MovementCard(
                 onClick = {
                     if (isClickable) {
                         game.addPlayerMovement(indexBoard)
-                        if (game.compareMovements(indexBoard)) {
+                        if (game.compareMovements()) {
                             Log.d("finish", "Finish the game")
                         } else if (game.playerMovements.size == game.movementSecuence.size) {
                             game.generateSecuence()

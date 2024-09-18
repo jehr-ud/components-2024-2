@@ -25,7 +25,7 @@ class Game(var level: String) {
         playerMovements.add(indexBoard)
     }
 
-    fun compareMovements(indexBoard: Int): Boolean{
+    fun compareMovements(): Boolean{
         var errorMovement: MutableList<Int>  = mutableListOf()
 
         movementSecuence.forEachIndexed { index, d ->
