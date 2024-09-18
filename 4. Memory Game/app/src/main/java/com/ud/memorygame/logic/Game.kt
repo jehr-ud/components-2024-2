@@ -1,6 +1,8 @@
 package com.ud.memorygame.logic
 
+import com.ud.memorygame.model.enums.EnumDificult
 import com.ud.memorygame.model.enums.TypeMovement
+
 
 class Game(var level: String) {
     var rows: Int = 0
@@ -14,14 +16,16 @@ class Game(var level: String) {
 
     private fun calculateShape() {
         rows = when (this.level) {
-            "L" -> 1
-            "M" -> 2
-            "H" -> 3
+            EnumDificult.LOW.toString() -> 1
+            EnumDificult.MEDIUM.toString() -> 2
+            EnumDificult.HARD.toString() -> 3
             else -> 0
         }
 
         cols = when (this.level) {
-            "L", "M", "H" -> 2
+            EnumDificult.LOW.toString(),
+            EnumDificult.MEDIUM.toString(),
+            EnumDificult.HARD.toString() -> 2
             else -> 0
         }
     }
