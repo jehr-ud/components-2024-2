@@ -16,7 +16,7 @@ class Game(var level: String) {
         rows = when (this.level) {
             "L" -> 1
             "M" -> 2
-            "H" -> 2
+            "H" -> 3
             else -> 0
         }
 
