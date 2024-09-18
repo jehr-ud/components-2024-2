@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import com.ud.memorygame.model.enums.EnumDificult
 
 class MainActivity : ComponentActivity() {
     private lateinit var btnLow: Button
@@ -25,17 +26,17 @@ class MainActivity : ComponentActivity() {
 
         btnLow.setOnClickListener {
             Toast.makeText(this, "Clic in btn Low", Toast.LENGTH_LONG).show()
-            goToGame("L")
+            goToGame(EnumDificult.LOW.toString())
         }
 
         btnMedium.setOnClickListener{
             Toast.makeText(this, "Clic in btn Medium", Toast.LENGTH_LONG).show()
-            goToGame("M")
+            goToGame(EnumDificult.MEDIUM.toString())
         }
 
         btnHard.setOnClickListener{
             Toast.makeText(this, "Clic in btn Hard", Toast.LENGTH_LONG).show()
-            goToGame("H")
+            goToGame(EnumDificult.HARD.toString())
         }
     }
 
