@@ -6,10 +6,32 @@ class Game(var level: String) {
     var rows: Int = 0
     var cols: Int = 0
     var board: MutableList<TypeMovement> = mutableListOf()
+    var movementSecuence: MutableList<Int> = mutableListOf()
+    var playerMovements: MutableList<Int> = mutableListOf()
 
     init {
         calculateShape()
         generateBoard()
+        generateSecuence()
+    }
+
+    fun generateSecuence(){
+        movementSecuence.add((0..board.size).shuffled().first())
+    }
+
+    fun addPlayerMovement(indexBoard: Int){
+        playerMovements.add(indexBoard)
+    }
+
+    fun compareMovements(indexBoard: Int): Boolean{
+        var errorMovement: MutableList<Int>  = mutableListOf()
+
+        movementSecuence.forEachIndexed { index, d ->
+            if (playerMovements[index] != d){
+                errorMovement.add(index)
+            }
+        }
+        return errorMovement.size > 0
     }
 
     private fun calculateShape() {
