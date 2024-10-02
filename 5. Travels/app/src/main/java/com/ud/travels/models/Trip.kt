@@ -1,7 +1,7 @@
 package com.ud.travels.models
 
 data class Trip(
-    var id: Int,
+    var id: String = "",
     var initDate: String,
     var endDate: String,
     var destiny: String,
