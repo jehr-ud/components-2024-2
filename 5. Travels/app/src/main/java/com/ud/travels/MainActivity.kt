@@ -5,24 +5,52 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.Surface
+import com.google.firebase.Firebase
+import com.google.firebase.FirebaseApp
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.database
+import com.google.firebase.database.getValue
 import com.ud.travels.composables.TripList
 import com.ud.travels.models.Trip
 import com.ud.travels.ui.theme.TravelsTheme
 
+
 class MainActivity : ComponentActivity() {
+    private lateinit var database: DatabaseReference
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        FirebaseApp.initializeApp(this)
+        database = Firebase.database.reference
 
-        val trips = listOf(
-            Trip(1, "2024-10-04", "2024-10-14", "Cali", "activities", "places", 100.2),
-            Trip(2, "2024-10-04", "2024-10-14", "STM", "activities", "places", 100.2)
-        )
+        val tripRef = database.child("trips")
 
-        enableEdgeToEdge()
-        setContent {
-            TravelsTheme {
-                Surface { TripList(trips) }
+        tripRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val trips = mutableListOf<Trip>()
+
+                for (tripSnapshot in dataSnapshot.children){
+                    val trip = tripSnapshot.getValue<Trip>()
+                    if (trip != null){
+                        trip.id = tripSnapshot.key.toString()
+                        trips.add(trip)
+                    }
+                }
+
+                enableEdgeToEdge()
+                setContent {
+                    TravelsTheme {
+                        Surface { TripList(trips) }
+                    }
+                }
             }
-        }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // ...
+            }
+        })
     }
 }
