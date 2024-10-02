@@ -100,7 +100,7 @@ fun TripForm() {
 }
 
 fun saveTrip(trip: Trip){
-    var database = Firebase.database.reference
+    val database = Firebase.database.reference
     val key = database.child("trips").push().key
     if (key == null) {
         Log.w("trips", "Couldn't get push key for trips")
