@@ -32,8 +32,8 @@ class MainActivity : ComponentActivity() {
 
                 for (tripSnapshot in dataSnapshot.children){
                     val trip = tripSnapshot.getValue<Trip>()
-
                     if (trip != null){
+                        trip.id = tripSnapshot.key.toString()
                         trips.add(trip)
                     }
                 }
