@@ -15,7 +15,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
 import com.google.firebase.database.getValue
-import com.ud.travels.composables.TripList
+import com.ud.travels.composables.TravelsApp
 import com.ud.travels.models.Trip
 import com.ud.travels.ui.theme.TravelsTheme
 
@@ -27,6 +27,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         FirebaseApp.initializeApp(this)
         database = Firebase.database.reference
+
 
         val trips = mutableStateListOf<Trip>()
 
@@ -50,10 +51,12 @@ class MainActivity : ComponentActivity() {
         })
 
         enableEdgeToEdge()
+
+
         setContent {
             TravelsTheme {
                 Surface {
-                    TripList(trips)
+                    TravelsApp(trips = trips)
                 }
             }
         }

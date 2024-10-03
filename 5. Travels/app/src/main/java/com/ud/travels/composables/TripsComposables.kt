@@ -1,6 +1,7 @@
 package com.ud.travels.composables
 
 import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,6 +19,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.google.firebase.Firebase
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.database
@@ -107,31 +113,99 @@ fun saveTrip(trip: Trip, database: DatabaseReference) {
 }
 
 @Composable
-fun TripList(trips: List<Trip>){
+fun TravelsApp(trips: List<Trip>) {
+    val navController = rememberNavController()
+
+    NavHost(navController = navController, startDestination = "tripList") {
+        composable("tripList") {
+            TripListScreen(
+                trips = trips,
+                onTripClick = { tripId ->
+                    navController.navigate("tripDetail/$tripId")
+                }
+            )
+        }
+        composable(
+            "tripDetail/{tripId}",
+            arguments = listOf(navArgument("tripId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val tripId = backStackEntry.arguments?.getString("tripId")
+            TripDetailScreen(tripId = tripId)
+        }
+    }
+}
+
+@Composable
+fun TripListScreen(trips: List<Trip>, onTripClick: (String) -> Unit) {
+    TripList(trips, onTripClick)
+}
+
+@Composable
+fun TripList(trips: List<Trip>, onTripClick: (String) -> Unit) {
     Column {
         BasicText("My trips")
         LazyColumn {
             items(trips) { trip ->
-                TripCard (trip)
+                TripCard(trip, onClick = { onTripClick(trip.id) })
             }
         }
-
         Spacer(modifier = Modifier.height(20.dp))
-
         TripForm()
     }
 }
 
 @Composable
-fun TripCard(trip: Trip){
-    Card {
+fun TripCard(trip: Trip, onClick: () -> Unit) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+            .clickable { onClick() }
+    ) {
         Row {
-            BasicText(trip.id.toString())
+            BasicText(trip.id)
             Column {
                 BasicText("Start Date: ${trip.initDate}")
                 BasicText("End Date: ${trip.endDate}")
             }
         }
+    }
+}
+
+
+@Composable
+fun TripDetailScreen(tripId: String?) {
+    if (tripId == null) {
+        BasicText("Trip not found")
+        return
+    }
+
+    val trip = remember { mutableStateOf<Trip?>(null) }
+
+    LaunchedEffect(tripId) {
+        trip.value = Trip(
+            id = tripId,
+            initDate = "2024-10-04",
+            endDate = "2024-10-14",
+            destiny = "Sample Destination",
+            activities = "Sample Activities",
+            places = "Sample Places",
+            price = 100.2
+        )
+    }
+
+    trip.value?.let { trip ->
+        Column(modifier = Modifier.padding(16.dp)) {
+            BasicText("Trip ID: ${trip.id}")
+            BasicText("Start Date: ${trip.initDate}")
+            BasicText("End Date: ${trip.endDate}")
+            BasicText("Destination: ${trip.destiny}")
+            BasicText("Activities: ${trip.activities}")
+            BasicText("Places: ${trip.places}")
+            BasicText("Price: ${trip.price}")
+        }
+    } ?: run {
+        BasicText("Loading trip details...")
     }
 }
 
@@ -142,5 +216,5 @@ private fun PreviewList() {
         Trip("1", "2024-10-04", "2024-10-14", "Cali", "activities", "places", 100.2),
         Trip("2", "2024-10-04", "2024-10-14", "STM", "activities", "places", 100.2)
     )
-    TripList(trips)
+    TravelsApp(trips)
 }
