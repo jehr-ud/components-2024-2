@@ -28,7 +28,6 @@ class MainActivity : ComponentActivity() {
         FirebaseApp.initializeApp(this)
         database = Firebase.database.reference
 
-
         val trips = mutableStateListOf<Trip>()
 
         val tripRef = database.child("trips")
