@@ -1,10 +1,12 @@
 package com.ud.travels
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.mutableStateListOf
 import com.google.firebase.Firebase
 import com.google.firebase.FirebaseApp
 import com.google.firebase.database.DataSnapshot
@@ -26,31 +28,34 @@ class MainActivity : ComponentActivity() {
         FirebaseApp.initializeApp(this)
         database = Firebase.database.reference
 
+        val trips = mutableStateListOf<Trip>()
+
         val tripRef = database.child("trips")
-
-        tripRef.addListenerForSingleValueEvent(object : ValueEventListener {
+        tripRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val trips = mutableListOf<Trip>()
+                trips.clear()
 
-                for (tripSnapshot in dataSnapshot.children){
+                for (tripSnapshot in dataSnapshot.children) {
                     val trip = tripSnapshot.getValue<Trip>()
-                    if (trip != null){
+                    if (trip != null) {
                         trip.id = tripSnapshot.key.toString()
                         trips.add(trip)
-                    }
-                }
-
-                enableEdgeToEdge()
-                setContent {
-                    TravelsTheme {
-                        Surface { TripList(trips) }
                     }
                 }
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
-                // ...
+                Log.e("MainActivity", "Database error: ${databaseError.message}")
             }
         })
+
+        enableEdgeToEdge()
+        setContent {
+            TravelsTheme {
+                Surface {
+                    TripList(trips)
+                }
+            }
+        }
     }
 }

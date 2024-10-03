@@ -15,9 +15,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.firebase.Firebase
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.database
 import com.ud.travels.models.Trip
 
@@ -31,6 +33,9 @@ fun TripForm() {
     var places by remember { mutableStateOf("") }
     var price by remember { mutableStateOf("") }
 
+    val context = LocalContext.current
+    val database = Firebase.database.reference
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -43,43 +48,37 @@ fun TripForm() {
             label = { Text("Start Date") },
             modifier = Modifier.fillMaxWidth()
         )
-
         TextField(
             value = endDate,
             onValueChange = { endDate = it },
             label = { Text("End Date") },
             modifier = Modifier.fillMaxWidth()
         )
-
         TextField(
             value = destiny,
             onValueChange = { destiny = it },
             label = { Text("Destination") },
             modifier = Modifier.fillMaxWidth()
         )
-
         TextField(
             value = activities,
             onValueChange = { activities = it },
             label = { Text("Activities") },
             modifier = Modifier.fillMaxWidth()
         )
-
         TextField(
             value = places,
             onValueChange = { places = it },
             label = { Text("Places") },
             modifier = Modifier.fillMaxWidth()
         )
-
         TextField(
             value = price,
             onValueChange = { price = it },
             label = { Text("Price") },
             modifier = Modifier.fillMaxWidth()
         )
-
-        Button (
+        Button(
             onClick = {
                 val trip = Trip(
                     initDate = initDate,
@@ -89,8 +88,7 @@ fun TripForm() {
                     places = places,
                     price = price.toDoubleOrNull() ?: 0.0
                 )
-
-                saveTrip(trip)
+                saveTrip(trip, database)
             },
             modifier = Modifier.align(Alignment.End)
         ) {
@@ -99,14 +97,12 @@ fun TripForm() {
     }
 }
 
-fun saveTrip(trip: Trip){
-    val database = Firebase.database.reference
+fun saveTrip(trip: Trip, database: DatabaseReference) {
     val key = database.child("trips").push().key
     if (key == null) {
         Log.w("trips", "Couldn't get push key for trips")
         return
     }
-
     database.child("trips").child(key).setValue(trip)
 }
 
