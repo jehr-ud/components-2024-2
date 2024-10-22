@@ -4,7 +4,9 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import com.ud.memorygame.composables.MemoryGameScreen
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import com.ud.memorygame.composables.GameNavigationDrawer
 
 class GameActivity : AppCompatActivity() {
     var level: String = "L"
@@ -19,7 +21,11 @@ class GameActivity : AppCompatActivity() {
         Log.d("levelcat", "level $level")
 
         setContent {
-            MemoryGameScreen(level)
+            MaterialTheme {
+                Surface {
+                    GameNavigationDrawer(level)
+                }
+            }
         }
     }
 }
