@@ -7,14 +7,14 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import com.ud.memorygame.model.enums.EnumDificult
 
-class MainActivity : ComponentActivity() {
+class LevelActivity : ComponentActivity() {
     private lateinit var btnLow: Button
     private lateinit var btnMedium: Button
     private lateinit var btnHard: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.main_activity)
+        setContentView(R.layout.level_activity)
 
         addLogicToBtns()
     }
@@ -26,22 +26,22 @@ class MainActivity : ComponentActivity() {
 
         btnLow.setOnClickListener {
             Toast.makeText(this, "Clic in btn Low", Toast.LENGTH_LONG).show()
-            goToGame(EnumDificult.LOW.toString())
+            gotoMatch(EnumDificult.LOW.toString())
         }
 
         btnMedium.setOnClickListener{
             Toast.makeText(this, "Clic in btn Medium", Toast.LENGTH_LONG).show()
-            goToGame(EnumDificult.MEDIUM.toString())
+            gotoMatch(EnumDificult.MEDIUM.toString())
         }
 
         btnHard.setOnClickListener{
             Toast.makeText(this, "Clic in btn Hard", Toast.LENGTH_LONG).show()
-            goToGame(EnumDificult.HARD.toString())
+            gotoMatch(EnumDificult.HARD.toString())
         }
     }
 
-    fun goToGame(level: String){
-        var intent = Intent(this, GameActivity::class.java)
+    fun gotoMatch(level: String){
+        var intent = Intent(this, MatchActivity::class.java)
         intent.putExtra("level", level)
         startActivity(intent)
     }
