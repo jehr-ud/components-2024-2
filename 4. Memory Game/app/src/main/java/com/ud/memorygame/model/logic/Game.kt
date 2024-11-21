@@ -1,12 +1,13 @@
-package com.ud.memorygame.logic
+package com.ud.memorygame.model.logic
 
 import com.ud.memorygame.model.enums.EnumDificult
 import com.ud.memorygame.model.enums.TypeMovement
 
 
-class Game(var level: String) {
+class Game(var level: String, var players: MutableList<Player> = mutableListOf()) {
     var rows: Int = 0
     var cols: Int = 0
+    var canStart: Boolean = false
     var board: MutableList<TypeMovement> = mutableListOf()
     var movementSecuence: MutableList<Int> = mutableListOf()
     var playerMovements: MutableList<Int> = mutableListOf()

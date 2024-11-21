@@ -7,4 +7,12 @@
     <string name="activity_main_btn_level1">Low</string>
     <string name="activity_main_btn_level2">Medium</string>
     <string name="activity_main_btn_level3">Hard</string>
+
+    <string name="match_activity_lbl1">Alias de la partida</string>
+    <string name="match_activity_btn">Crear partida</string>
+    <string name="match_activity_empty_alias">Debe digitar un alias</string>
+    <string name="match_activity_hint">¡Ingresa el alias de la partida!</string>
+    <string name="login_email">Correo electrónico</string>
+    <string name="login_password">Contraseña</string>
+    <string name="login_btn">Iniciar sesión</string>
 </resources>
