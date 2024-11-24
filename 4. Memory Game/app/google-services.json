@@ -2,7 +2,7 @@
   "project_info": {
     "project_number": "921904475701",
     "project_id": "memory-game-ud",
-    "storage_bucket": "memory-game-ud.appspot.com"
+    "storage_bucket": "memory-game-ud.firebasestorage.app"
   },
   "client": [
     {
