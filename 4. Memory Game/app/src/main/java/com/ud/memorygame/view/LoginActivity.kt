@@ -1,4 +1,4 @@
-package com.ud.memorygame
+package com.ud.memorygame.view
 
 import android.content.Context
 import android.content.Intent
@@ -7,8 +7,6 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
@@ -29,6 +27,10 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+
+        if (isUserDataSaved()) {
+            goToGame()
+        }
 
         binding.btnLogin.setOnClickListener {
             val email = binding.etEmail.text.toString()
@@ -64,8 +66,6 @@ class LoginActivity : AppCompatActivity() {
                                         }
 
                                         goToGame()
-
-                                        goToGame()
                                     } else {
                                         // Error al iniciar sesión
                                         Toast.makeText(
@@ -87,6 +87,11 @@ class LoginActivity : AppCompatActivity() {
                 }
         }
 
+    }
+
+    private fun isUserDataSaved(): Boolean {
+        val userId = sharedPreferences.getString("userId", "")
+        return userId != ""
     }
 
     private fun saveUserData(userId: String, email: String?) {

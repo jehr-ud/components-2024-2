@@ -1,4 +1,4 @@
-package com.ud.memorygame.composables
+package com.ud.memorygame.view.composables
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*

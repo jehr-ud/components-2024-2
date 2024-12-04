@@ -1,4 +1,4 @@
-package com.ud.memorygame.composables
+package com.ud.memorygame.view.composables
 
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
@@ -43,6 +43,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun MemoryGameScreen(alias: String) {
+    // TODO: llamar al game de la base de datos con el alias
     val game = remember { Game("", "") }
     var isPlayerTurn = remember { mutableStateOf(false) }
     var movements = game.movementSecuence

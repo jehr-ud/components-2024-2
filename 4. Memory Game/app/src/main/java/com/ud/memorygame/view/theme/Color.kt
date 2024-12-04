@@ -1,4 +1,4 @@
-package com.ud.memorygame.ui.theme
+package com.ud.memorygame.view.theme
 
 import androidx.compose.ui.graphics.Color
 

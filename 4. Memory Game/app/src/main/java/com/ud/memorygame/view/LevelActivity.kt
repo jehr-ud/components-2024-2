@@ -1,10 +1,11 @@
-package com.ud.memorygame
+package com.ud.memorygame.view
 
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import com.ud.memorygame.R
 import com.ud.memorygame.model.enums.EnumDificult
 
 class LevelActivity : ComponentActivity() {

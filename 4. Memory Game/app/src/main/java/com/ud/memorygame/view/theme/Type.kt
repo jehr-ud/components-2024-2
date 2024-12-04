@@ -1,4 +1,4 @@
-package com.ud.memorygame.ui.theme
+package com.ud.memorygame.view.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
