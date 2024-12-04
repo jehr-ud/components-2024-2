@@ -34,14 +34,14 @@ class MatchActivity : AppCompatActivity() {
 
         binding.btnMatch.setOnClickListener{
             if (binding.txtMatchAlias.text.isEmpty()){
-                Toast.makeText(this, R.string.match_activity_empty_alias, Toast.LENGTH_SHORT)
+                Toast.makeText(this, R.string.match_activity_empty_alias, Toast.LENGTH_SHORT).show()
             } else {
                 storageMatchInDB()
             }
         }
     }
 
-    fun storageMatchInDB(){
+    private fun storageMatchInDB(){
         val userId = sharedPreferences.getString("userId", "")
         val email = sharedPreferences.getString("email", "")
 
@@ -52,7 +52,7 @@ class MatchActivity : AppCompatActivity() {
 
         val alias = binding.txtMatchAlias.text.toString()
 
-        database.child("games").orderByChild("aliasMatch").equalTo(alias)
+        database.child("games").orderByChild("alias").equalTo(alias)
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     if (dataSnapshot.exists()) {
@@ -71,13 +71,15 @@ class MatchActivity : AppCompatActivity() {
                     } else {
                         val gameID = database.child("games").push().key
                         gameID?.let {
-                            var players: MutableList<Player> = mutableListOf(Player(email,  userId))
-                            val game = Game("1", players)
+                            val players: MutableList<Player> = mutableListOf(Player(email,  userId))
+                            val game = Game("1", alias, players)
+
+                            Toast.makeText(this@MatchActivity, "eSTE ES EL A" + game.alias.toString(), Toast.LENGTH_SHORT).show()
 
                             database.child("games").child(it).setValue(game)
                             setupGameUpdateListener(gameID)
 
-                            Toast.makeText(this@MatchActivity, "Esperando jugador 2..", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@MatchActivity, "Waiting for second player..", Toast.LENGTH_SHORT).show()
                         }
                     }
                 }

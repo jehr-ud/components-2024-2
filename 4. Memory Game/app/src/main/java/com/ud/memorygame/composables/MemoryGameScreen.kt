@@ -42,8 +42,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun MemoryGameScreen(level: String) {
-    val game = remember { Game(level) }
+fun MemoryGameScreen(alias: String) {
+    val game = remember { Game("", "") }
     var isPlayerTurn = remember { mutableStateOf(false) }
     var movements = game.movementSecuence
 
