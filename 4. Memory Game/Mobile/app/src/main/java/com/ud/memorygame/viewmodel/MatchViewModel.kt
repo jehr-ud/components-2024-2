@@ -18,14 +18,14 @@ class MatchViewModel(private val repository: GameRepository = GameRepository()) 
     private val _navigateToLogin = MutableLiveData<Unit>()
     val navigateToLogin: LiveData<Unit> get() = _navigateToLogin
 
-    fun onMatchButtonClicked(alias: String, level: String) {
+    fun onMatchButtonClicked(alias: String, level: String, email: String, userId: String) {
         repository.getGameByAlias(alias) { dataSnapshot ->
             if (dataSnapshot?.exists() == true) {
                 for (childSnapshot in dataSnapshot.children) {
                     val gameId = childSnapshot.key
                     val game = childSnapshot.getValue(Game::class.java)
                     game?.let {
-                        it.players.add(Player("userEmail", "userId"))
+                        it.players.add(Player(email, userId))
                         it.canStart = true
                         gameId?.let { id ->
                             repository.updateGame(id, it)
@@ -34,7 +34,10 @@ class MatchViewModel(private val repository: GameRepository = GameRepository()) 
                     }
                 }
             } else {
-                val newGame = Game(level, alias, mutableListOf(Player("userEmail", "userId")))
+                val newGame = Game(level, alias, mutableListOf(Player(email, userId)))
+                newGame.turnPlayerId = userId
+                newGame.initGame()
+
                 repository.createGame(newGame) { gameId ->
                     if (gameId != null) {
                         _toastMessage.postValue("Waiting for second player...")

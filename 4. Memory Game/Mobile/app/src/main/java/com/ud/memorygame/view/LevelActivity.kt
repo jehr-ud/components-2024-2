@@ -26,17 +26,14 @@ class LevelActivity : ComponentActivity() {
         btnHard = findViewById(R.id.btnHard)
 
         btnLow.setOnClickListener {
-            Toast.makeText(this, "Clic in btn Low", Toast.LENGTH_LONG).show()
             gotoMatch(EnumDificult.LOW.toString())
         }
 
         btnMedium.setOnClickListener{
-            Toast.makeText(this, "Clic in btn Medium", Toast.LENGTH_LONG).show()
             gotoMatch(EnumDificult.MEDIUM.toString())
         }
 
         btnHard.setOnClickListener{
-            Toast.makeText(this, "Clic in btn Hard", Toast.LENGTH_LONG).show()
             gotoMatch(EnumDificult.HARD.toString())
         }
     }

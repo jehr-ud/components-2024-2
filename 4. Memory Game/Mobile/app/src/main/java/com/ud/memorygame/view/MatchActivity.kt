@@ -1,7 +1,9 @@
 package com.ud.memorygame.view
 
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -14,16 +16,15 @@ class MatchActivity : AppCompatActivity() {
     private var level: String = "L"
     private lateinit var binding: ActivityMatchBinding
     private val viewModel: MatchViewModel by viewModels()
+    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMatchBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val bundle = intent.extras
-        if (bundle != null) {
-            level = bundle.getString("level").toString()
-        }
+        level = intent.extras?.getString("level", "L") ?: "L"
+        sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
 
         setupObservers()
         setupListeners()
@@ -31,22 +32,19 @@ class MatchActivity : AppCompatActivity() {
 
     private fun setupObservers() {
         viewModel.toastMessage.observe(this) { message ->
-            message?.let {
-                Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
-            }
+            message?.let { Toast.makeText(this, it, Toast.LENGTH_SHORT).show() }
         }
 
         viewModel.navigateToGame.observe(this) { gameId ->
             gameId?.let {
-                val intent = Intent(this, GameActivity::class.java)
-                intent.putExtra("gameId", it)
-                startActivity(intent)
+                startActivity(Intent(this, GameActivity::class.java).apply {
+                    putExtra("gameId", it)
+                })
             }
         }
 
         viewModel.navigateToLogin.observe(this) {
-            val intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, LoginActivity::class.java))
         }
     }
 
@@ -56,7 +54,11 @@ class MatchActivity : AppCompatActivity() {
             if (alias.isEmpty()) {
                 Toast.makeText(this, R.string.match_activity_empty_alias, Toast.LENGTH_SHORT).show()
             } else {
-                viewModel.onMatchButtonClicked(alias, level)
+                sharedPreferences.run {
+                    val userId = getString("userId", "") ?: return@run
+                    val email = getString("email", "") ?: return@run
+                    viewModel.onMatchButtonClicked(alias, level, email, userId)
+                }
             }
         }
     }

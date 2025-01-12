@@ -1,5 +1,7 @@
 package com.ud.memorygame.view
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.setContent
@@ -10,6 +12,9 @@ import com.ud.memorygame.view.composables.GameNavigationDrawer
 
 class GameActivity : AppCompatActivity() {
     private var gameId: String = "L"
+    private var userId: String = "L"
+    private lateinit var sharedPreferences: SharedPreferences
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -18,12 +23,15 @@ class GameActivity : AppCompatActivity() {
             gameId = bundle.getString("gameId").toString()
         }
 
-        Log.d("gameIdcat", "gameId $gameId")
+        sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        sharedPreferences.run {
+            userId = getString("userId", "") ?: return@run
+        }
 
         setContent {
             MaterialTheme {
                 Surface {
-                    GameNavigationDrawer(gameId)
+                    GameNavigationDrawer(gameId, userId)
                 }
             }
         }

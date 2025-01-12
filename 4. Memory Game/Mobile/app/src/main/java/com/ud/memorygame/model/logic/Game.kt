@@ -13,32 +13,56 @@ class Game(
     var canStart: Boolean = false,
     var board: MutableList<TypeMovement> = mutableListOf(),
     var movementSecuence: MutableList<Int> = mutableListOf(),
-    var playerMovements: MutableList<Int> = mutableListOf()) {
-
+    var playerMovements: MutableList<Int> = mutableListOf(),
+    var turnPlayerId: String = ""
+) {
 
     init {
         calculateShape()
+    }
+
+    fun initGame(){
         generateBoard()
         generateSecuence()
     }
 
-    fun generateSecuence(){
-        movementSecuence.add((0..board.size).shuffled().first())
+    fun generateSecuence() {
+        val sequenceLength = when (level) {
+            EnumDificult.LOW.toString() -> 3
+            EnumDificult.MEDIUM.toString() -> 5
+            EnumDificult.HARD.toString() -> 7
+            else -> 5
+        }
+
+        if (board.isEmpty()) {
+            throw IllegalStateException("El tablero está vacío, no se puede generar la secuencia.")
+        }
+
+        repeat(sequenceLength) {
+            movementSecuence.add((0 until board.size).shuffled().first())
+        }
     }
 
-    fun addPlayerMovement(indexBoard: Int){
+    fun addMovementInSecuence() {
+        val sequenceLength = when (level) {
+            EnumDificult.LOW.toString() -> 1
+            EnumDificult.MEDIUM.toString() -> 2
+            EnumDificult.HARD.toString() -> 3
+            else -> 5
+        }
+
+        repeat(sequenceLength) {
+            movementSecuence.add((0 until board.size).shuffled().first())
+        }
+    }
+
+
+    fun addPlayerMovement(indexBoard: Int) {
         playerMovements.add(indexBoard)
     }
 
-    fun compareMovements(): Boolean{
-        var errorMovement: MutableList<Int>  = mutableListOf()
-
-        movementSecuence.forEachIndexed { index, d ->
-            if (playerMovements[index] != d){
-                errorMovement.add(index)
-            }
-        }
-        return errorMovement.size > 0
+    fun compareMovements(): Boolean {
+        return playerMovements == movementSecuence
     }
 
     private fun calculateShape() {
@@ -50,15 +74,19 @@ class Game(
         }
 
         cols = when (this.level) {
-            EnumDificult.LOW.toString(),
-            EnumDificult.MEDIUM.toString(),
-            EnumDificult.HARD.toString() -> 2
+            EnumDificult.LOW.toString() -> 2
+            EnumDificult.MEDIUM.toString() -> 2
+            EnumDificult.HARD.toString() -> 3
             else -> 0
         }
     }
 
     private fun generateBoard() {
         val totalCells = rows * cols
+        if (totalCells % 2 != 0) {
+            throw IllegalArgumentException("El número total de celdas debe ser par.")
+        }
+
         val availableMovements = TypeMovement.values().toList().shuffled()
 
         for (i in 0 until totalCells / 2) {
