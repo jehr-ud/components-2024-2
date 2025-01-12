@@ -7,8 +7,21 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
 import com.ud.memorygame.model.logic.Game
 
-class MatchRepository {
+class GameRepository {
     private val database = Firebase.database.reference
+
+    fun getGameById(id: String, callback: (DataSnapshot?) -> Unit) {
+        database.child("games").child(id)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    callback(dataSnapshot)
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    callback(null)
+                }
+            })
+    }
 
     fun getGameByAlias(alias: String, callback: (DataSnapshot?) -> Unit) {
         database.child("games").orderByChild("alias").equalTo(alias)

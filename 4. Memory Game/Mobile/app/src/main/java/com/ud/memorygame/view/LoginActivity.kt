@@ -29,7 +29,7 @@ class LoginActivity : AppCompatActivity() {
         sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
 
         if (isUserDataSaved()) {
-            goToGame()
+            goToLevelActivity()
         }
 
         binding.btnLogin.setOnClickListener {
@@ -39,7 +39,7 @@ class LoginActivity : AppCompatActivity() {
             auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
-                        // Usuario creado exitosamente
+                        // User created successfully
                         val user = auth.currentUser
                         Toast.makeText(
                             baseContext,
@@ -49,11 +49,11 @@ class LoginActivity : AppCompatActivity() {
                     } else {
                         val exception = task.exception
                         if (exception is FirebaseAuthUserCollisionException) {
-                            // El correo ya está registrado, intentar iniciar sesión
+                            // Email already registered, try to log in
                             auth.signInWithEmailAndPassword(email, password)
                                 .addOnCompleteListener(this) { loginTask ->
                                     if (loginTask.isSuccessful) {
-                                        // Inicio de sesión exitoso
+                                        // sing in successful
                                         val user = auth.currentUser
                                         Toast.makeText(
                                             baseContext,
@@ -65,9 +65,9 @@ class LoginActivity : AppCompatActivity() {
                                             saveUserData(user.uid, user.email)
                                         }
 
-                                        goToGame()
+                                        goToLevelActivity()
                                     } else {
-                                        // Error al iniciar sesión
+                                        // Error in sing in
                                         Toast.makeText(
                                             baseContext,
                                             "Error al iniciar sesión: ${loginTask.exception?.message}",
@@ -76,7 +76,7 @@ class LoginActivity : AppCompatActivity() {
                                     }
                                 }
                         } else {
-                            // Otro error durante la creación de la cuenta
+                            // another error
                             Toast.makeText(
                                 baseContext,
                                 "Error: ${exception?.message}",
@@ -101,8 +101,8 @@ class LoginActivity : AppCompatActivity() {
         editor.apply()
     }
 
-    private fun goToGame(){
-        startActivity(Intent(this, MatchActivity::class.java))
+    private fun goToLevelActivity(){
+        startActivity(Intent(this, LevelActivity::class.java))
         finish()
     }
 }

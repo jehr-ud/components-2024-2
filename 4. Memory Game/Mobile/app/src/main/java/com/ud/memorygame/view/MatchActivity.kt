@@ -11,7 +11,7 @@ import com.ud.memorygame.R
 import com.ud.memorygame.viewmodel.MatchViewModel
 
 class MatchActivity : AppCompatActivity() {
-
+    private var level: String = "L"
     private lateinit var binding: ActivityMatchBinding
     private val viewModel: MatchViewModel by viewModels()
 
@@ -19,6 +19,11 @@ class MatchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMatchBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val bundle = intent.extras
+        if (bundle != null) {
+            level = bundle.getString("level").toString()
+        }
 
         setupObservers()
         setupListeners()
@@ -40,7 +45,7 @@ class MatchActivity : AppCompatActivity() {
         }
 
         viewModel.navigateToLogin.observe(this) {
-            val intent = Intent(this, LevelActivity::class.java)
+            val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
     }
@@ -51,7 +56,7 @@ class MatchActivity : AppCompatActivity() {
             if (alias.isEmpty()) {
                 Toast.makeText(this, R.string.match_activity_empty_alias, Toast.LENGTH_SHORT).show()
             } else {
-                viewModel.onMatchButtonClicked(alias)
+                viewModel.onMatchButtonClicked(alias, level)
             }
         }
     }

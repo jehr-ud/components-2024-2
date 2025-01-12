@@ -9,21 +9,21 @@ import androidx.compose.material3.Surface
 import com.ud.memorygame.view.composables.GameNavigationDrawer
 
 class GameActivity : AppCompatActivity() {
-    var level: String = "L"
+    private var gameId: String = "L"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val bundle = intent.extras
         if (bundle != null) {
-            level = bundle.getString("level").toString()
+            gameId = bundle.getString("gameId").toString()
         }
 
-        Log.d("levelcat", "level $level")
+        Log.d("gameIdcat", "gameId $gameId")
 
         setContent {
             MaterialTheme {
                 Surface {
-                    GameNavigationDrawer(level)
+                    GameNavigationDrawer(gameId)
                 }
             }
         }

@@ -27,6 +27,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,58 +39,68 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.ud.memorygame.model.logic.Game
 import com.ud.memorygame.model.enums.TypeMovement
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.ud.memorygame.viewmodel.GameViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun MemoryGameScreen(alias: String) {
-    // TODO: llamar al game de la base de datos con el alias
-    val game = remember { Game("", "") }
-    var isPlayerTurn = remember { mutableStateOf(false) }
-    var movements = game.movementSecuence
+fun MemoryGameScreen(gameId: String, viewModel: GameViewModel = viewModel()) {
+    val game by viewModel.gameState.collectAsState()
 
-    var currentMovementIndex = remember { mutableStateOf(-1) }
-
-    LaunchedEffect(movements) {
-        isPlayerTurn.value = false
-        movements.forEachIndexed { index, movement ->
-            currentMovementIndex = mutableStateOf(movement)
-            delay(1000L)
-            currentMovementIndex = mutableStateOf(-1)
-            delay(500L)
-        }
-        isPlayerTurn.value = true
+    LaunchedEffect(gameId) {
+        viewModel.getGameById(gameId)
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        for (rowIndex in 0 until game.rows) {
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                for (colIndex in 0 until game.cols) {
-                    val indexBoard = rowIndex * game.cols + colIndex
-                    val movement = game.board[indexBoard]
+    if (game == null) {
+        Text("Loading game.. ", modifier = Modifier.padding(16.dp))
+    } else {
+        val isPlayerTurn = remember { mutableStateOf(false) }
+        val movements = game!!.movementSecuence
+        var currentMovementIndex = remember { mutableStateOf(-1) }
 
-                    val isHighlighted = currentMovementIndex.value == indexBoard
-                    MovementCard(
-                        movement = movement,
-                        game = game,
-                        indexBoard = indexBoard,
-                        isClickable = isPlayerTurn.value,
-                        isHighlighted = isHighlighted
-                    )
+        LaunchedEffect(movements) {
+            isPlayerTurn.value = false
+            movements.forEachIndexed { index, movement ->
+                currentMovementIndex.value = movement
+                delay(1000L)
+                currentMovementIndex.value = -1
+                delay(500L)
+            }
+            isPlayerTurn.value = true
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            for (rowIndex in 0 until game!!.rows) {
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    for (colIndex in 0 until game!!.cols) {
+                        val indexBoard = rowIndex * game!!.cols + colIndex
+                        val movement = game!!.board[indexBoard]
+
+                        val isHighlighted = currentMovementIndex.value == indexBoard
+                        MovementCard(
+                            movement = movement,
+                            game = game!!,
+                            indexBoard = indexBoard,
+                            isClickable = isPlayerTurn.value,
+                            isHighlighted = isHighlighted
+                        )
+                    }
                 }
             }
         }
     }
 }
+
 
 @Composable
 fun MovementCard(
@@ -139,7 +150,7 @@ fun MovementCard(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GameNavigationDrawer(level: String) {
+fun GameNavigationDrawer(gameId: String) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     var selectedScreen by remember { mutableStateOf("Inicio") }
@@ -177,9 +188,9 @@ fun GameNavigationDrawer(level: String) {
                         when (selectedScreen) {
                             "Mis partidas" -> Text("Aquí se mostrarán tus partidas guardadas.", modifier = Modifier.padding(16.dp))
                             "Jugar" -> {
-                                MemoryGameScreen(level)
+                                MemoryGameScreen(gameId)
                             }
-                            else -> Text("Bienvenido", modifier = Modifier.padding(16.dp))
+                            else -> MemoryGameScreen(gameId)
                         }
                     }
                 }

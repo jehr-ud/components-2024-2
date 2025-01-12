@@ -20,7 +20,7 @@ class LevelActivity : ComponentActivity() {
         addLogicToBtns()
     }
 
-    fun addLogicToBtns(){
+    private fun addLogicToBtns(){
         btnLow = findViewById(R.id.btnLow)
         btnMedium = findViewById(R.id.btnMedium)
         btnHard = findViewById(R.id.btnHard)
@@ -41,8 +41,8 @@ class LevelActivity : ComponentActivity() {
         }
     }
 
-    fun gotoMatch(level: String){
-        var intent = Intent(this, MatchActivity::class.java)
+    private fun gotoMatch(level: String){
+        val intent = Intent(this, MatchActivity::class.java)
         intent.putExtra("level", level)
         startActivity(intent)
     }

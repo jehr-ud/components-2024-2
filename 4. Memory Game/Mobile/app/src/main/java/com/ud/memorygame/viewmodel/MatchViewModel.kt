@@ -5,9 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.ud.memorygame.model.logic.Game
 import com.ud.memorygame.model.logic.Player
-import com.ud.memorygame.repositories.MatchRepository
+import com.ud.memorygame.repositories.GameRepository
 
-class MatchViewModel(private val repository: MatchRepository = MatchRepository()) : ViewModel() {
+class MatchViewModel(private val repository: GameRepository = GameRepository()) : ViewModel() {
 
     private val _toastMessage = MutableLiveData<String?>()
     val toastMessage: LiveData<String?> get() = _toastMessage
@@ -18,7 +18,7 @@ class MatchViewModel(private val repository: MatchRepository = MatchRepository()
     private val _navigateToLogin = MutableLiveData<Unit>()
     val navigateToLogin: LiveData<Unit> get() = _navigateToLogin
 
-    fun onMatchButtonClicked(alias: String) {
+    fun onMatchButtonClicked(alias: String, level: String) {
         repository.getGameByAlias(alias) { dataSnapshot ->
             if (dataSnapshot?.exists() == true) {
                 for (childSnapshot in dataSnapshot.children) {
@@ -34,7 +34,7 @@ class MatchViewModel(private val repository: MatchRepository = MatchRepository()
                     }
                 }
             } else {
-                val newGame = Game("1", alias, mutableListOf(Player("userEmail", "userId")))
+                val newGame = Game(level, alias, mutableListOf(Player("userEmail", "userId")))
                 repository.createGame(newGame) { gameId ->
                     if (gameId != null) {
                         _toastMessage.postValue("Waiting for second player...")
