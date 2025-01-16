@@ -30,9 +30,9 @@ router.get("/average/:player_uuid", async (req, res) => {
 
 // Store new score
 router.post("/", async (req, res) => {
-    const { player_uuid, score } = req.body;
+    const { player_uuid, game_uuid, score } = req.body;
     try {
-        const newScore = new Score({ player_uuid, score });
+        const newScore = new Score({ player_uuid, game_uuid, score });
         await newScore.save();
         res.status(201).json(newScore);
     } catch (err) {
