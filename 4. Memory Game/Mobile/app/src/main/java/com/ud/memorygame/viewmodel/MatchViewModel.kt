@@ -25,33 +25,22 @@ class MatchViewModel(private val repository: GameRepository = GameRepository()) 
                     val gameId = childSnapshot.key
                     val game = childSnapshot.getValue(Game::class.java)
                     game?.let {
-                        it.players.add(Player(email, userId))
-                        it.canStart = true
-                        gameId?.let { id ->
-                            repository.updateGame(id, it)
-                            _navigateToGame.postValue(id)
+                        // Verificar si el jugador tiene el nivel adecuado
+                        val currentPlayer = it.players.find { player -> player.userId == userId }
+                        if (currentPlayer?.level == level) {
+                            it.players.add(Player(email, userId, level)) // Agregar el nivel aquí también
+                            it.canStart = true
+                            gameId?.let { id ->
+                                repository.updateGame(id, it)
+                                _navigateToGame.postValue(id)
+                            }
+                        } else {
+                            _toastMessage.postValue("No tienes acceso a este nivel.")
                         }
                     }
                 }
             } else {
-                val newGame = Game(level, alias, mutableListOf(Player(email, userId)))
-                newGame.turnPlayerId = userId
-                newGame.initGame()
-
-                repository.createGame(newGame) { gameId ->
-                    if (gameId != null) {
-                        _toastMessage.postValue("Waiting for second player...")
-                        repository.listenToGameUpdates(gameId) { game ->
-                            game?.let {
-                                if (it.canStart) {
-                                    _navigateToGame.postValue(gameId)
-                                }
-                            }
-                        }
-                    } else {
-                        _toastMessage.postValue("Error creating game")
-                    }
-                }
+                _toastMessage.postValue("Partida no encontrada.")
             }
         }
     }
