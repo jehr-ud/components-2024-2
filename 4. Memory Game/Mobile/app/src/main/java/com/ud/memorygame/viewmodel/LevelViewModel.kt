@@ -29,7 +29,7 @@ class LevelViewModel : ViewModel() {
                 val connection = url.openConnection() as HttpURLConnection
                 connection.requestMethod = "GET"
                 connection.connectTimeout = 10000
-                connection.readTimeout = 10000
+                connection.readTimeout = 10000  
 
                 try {
                     Log.e("LevelViewModel", "Response Code: ${connection.responseCode}")

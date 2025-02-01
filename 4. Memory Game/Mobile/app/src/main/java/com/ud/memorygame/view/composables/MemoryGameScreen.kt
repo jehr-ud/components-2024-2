@@ -44,6 +44,7 @@ import com.ud.memorygame.model.logic.Game
 import com.ud.memorygame.model.enums.TypeMovement
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ud.memorygame.model.enums.EnumDificult
+import com.ud.memorygame.model.logic.Score
 import com.ud.memorygame.viewmodel.GameViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -163,14 +164,22 @@ fun MovementCard(
                 onClick = {
                     if (isClickable) {
                         game.addPlayerMovement(indexBoard)
+
+                        val score = Score(
+                            player_uuid = game.turnPlayerId,
+                            game_uuid = gameId,
+                            score = "333"
+                        )
+
                         if (game.compareMovements()) {
                             viewModel.gameMessage("Complete sequence the game")
-                            viewModel.updateScorePlayer(gameId, game)
+                            viewModel.sendScore(score)
                         } else if (game.playerMovements.size == game.movementSecuence.size) {
                             viewModel.gameMessage("Sequence no completed")
                             game.addMovementInSecuence()
                             game.playerMovements.clear()
-                            viewModel.updateTurnPlayerId(gameId, game)
+
+                            viewModel.updateTurnPlayerId(gameId, game, score)
                         }
                     }
                 },
